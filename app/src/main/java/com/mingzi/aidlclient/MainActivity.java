@@ -8,12 +8,14 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mingzi.aidl.IPerson;
+import com.mingzi.aidlclient.fragment.MyFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private IPerson mPerson;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        initFragment();
         Intent mAidlIntent = new Intent();
         mAidlIntent.setAction("com.mingzi.MyAidlService");
         bindService(mAidlIntent, mConn, BIND_AUTO_CREATE);
@@ -61,6 +64,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             catch (RemoteException e){
                 e.printStackTrace();
             }
+        }
+    }
+    public void initFragment(){
+        Display mDisplay = getWindowManager().getDefaultDisplay();
+        if (mDisplay.getWidth()<mDisplay.getHeight()) {
+            MyFragment f1 = new MyFragment();
+            getFragmentManager().beginTransaction().replace(R.id.myfragment,f1).commit();
+        }
+        else {
+            MyFragment f2 = new MyFragment();
+            getFragmentManager().beginTransaction().replace(R.id.myfragment,f2).commit();
         }
     }
 }
