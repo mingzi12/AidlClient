@@ -15,22 +15,40 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mingzi.aidl.IPerson;
+import com.mingzi.aidlclient.database.MyDBOpenHelper;
+import com.mingzi.aidlclient.database.MySQLiteDatabase;
+import com.mingzi.aidlclient.filehelper.FileHelper;
 import com.mingzi.aidlclient.fragment.MyFragment;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private IPerson mPerson;
     private TextView mTextView;
     private Button mButton;
     private EditText mEditText;
+    private EditText mFileName;
+    private EditText mFileContent;
+    private Button saveBtn;
+    private Button readBtn;
+    private Button clearBtn;
+    private Button insertBtn;
+    private Button queryBtn;
+    MyDBOpenHelper myDBOpenHelper;
+    MySQLiteDatabase mySQLiteDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        myDBOpenHelper = new MyDBOpenHelper(MainActivity.this,null,null,1);
         initFragment();
+        initFileView();
+        initDatabaseBtn();
         Intent mAidlIntent = new Intent();
         mAidlIntent.setAction("com.mingzi.MyAidlService");
+        mAidlIntent.setPackage(this.getPackageName());
         bindService(mAidlIntent, mConn, BIND_AUTO_CREATE);
         initView();
     }
@@ -52,19 +70,73 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     };
-
+    private void initDatabaseBtn(){
+        insertBtn = (Button) findViewById(R.id.insertbtn);
+        queryBtn = (Button) findViewById(R.id.querybtn);
+        Button updatebtn = (Button) findViewById(R.id.updatebtn);
+        Button deletebtn = (Button) findViewById(R.id.deletebtn);
+        updatebtn.setOnClickListener(this);
+        deletebtn.setOnClickListener(this);
+        insertBtn.setOnClickListener(this);
+        queryBtn.setOnClickListener(this);
+    }
     @Override
     public void onClick(View v) {
-        String num = mEditText.getText().toString();
-        int nameNum = Integer.valueOf(num);
-        if (nameNum>=0&&nameNum<=4){
-            try{
-                mTextView.setText(mPerson.queryPerson(nameNum).toString());
+        if (mySQLiteDatabase==null)
+            mySQLiteDatabase = new MySQLiteDatabase(MainActivity.this,myDBOpenHelper);
+        switch (v.getId()){
+            case R.id.mAidlBtn:
+            String num = mEditText.getText().toString();
+            int nameNum = Integer.valueOf(num);
+            if (nameNum>=0&&nameNum<=4){
+                try{
+                    mTextView.setText(mPerson.queryPerson(nameNum).toString());
+                }
+                catch (RemoteException e){
+                    e.printStackTrace();
+                }
             }
-            catch (RemoteException e){
-                e.printStackTrace();
-            }
+                break;
+            case R.id.savebtn:
+                FileHelper mSaveFileHelper = new FileHelper(getApplicationContext());
+                String fileName = mFileName.getText().toString();
+                String fileContent = mFileContent.getText().toString();
+                try{
+                    mSaveFileHelper.saveFile(fileName,fileContent);
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.readbtn:
+                FileHelper mReadFileHelper = new FileHelper(getApplicationContext());
+                String fileReadName = mFileName.getText().toString();
+                try{
+                    String content = mReadFileHelper.readFile(fileReadName);
+                    mFileContent.setText(content);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.clearbtn:
+                mFileContent.setText("");
+                mFileName.setText("");
+                break;
+            case R.id.insertbtn:
+                mySQLiteDatabase.insert();
+                break;
+            case R.id.querybtn:
+                mySQLiteDatabase.query();
+                break;
+            case R.id.updatebtn:
+                mySQLiteDatabase.update();
+                break;
+            case R.id.deletebtn:
+                mySQLiteDatabase.delete();
+            default:
+
+                break;
         }
+
     }
     public void initFragment(){
         Display mDisplay = getWindowManager().getDefaultDisplay();
@@ -76,5 +148,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MyFragment f2 = new MyFragment();
             getFragmentManager().beginTransaction().replace(R.id.myfragment,f2).commit();
         }
+    }
+    public void initFileView(){
+        mFileName = (EditText) findViewById(R.id.filenametxt);
+        mFileContent = (EditText) findViewById(R.id.filecontent);
+        saveBtn = (Button) findViewById(R.id.savebtn);
+        readBtn = (Button) findViewById(R.id.readbtn);
+        clearBtn = (Button) findViewById(R.id.clearbtn);
+        saveBtn.setOnClickListener(this);
+        readBtn.setOnClickListener(this);
+        clearBtn.setOnClickListener(this);
     }
 }

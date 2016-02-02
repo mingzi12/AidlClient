@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="This is first fragment" />
+        android:text="This is the first fragment" />
 
 </FrameLayout>
