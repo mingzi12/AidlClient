@@ -23,6 +23,7 @@ public class MySQLiteDatabase {
       //  db =myDBOpenHelper.getWritableDatabase();
         ContentValues values1 = new ContentValues();
         values1.put("name","helloKitty"+i);
+        values1.put("phone","139777"+i);
         i++;
         db.insert("person",null,values1);
         Toast.makeText(mContext,"insert successfully",Toast.LENGTH_SHORT).show();
@@ -35,7 +36,8 @@ public class MySQLiteDatabase {
             do {
                 int personid = cursor.getInt(cursor.getColumnIndex("personId"));
                 String name = cursor.getString(cursor.getColumnIndex("name"));
-                sb.append("id: "+personid+";"+"name: "+name+"\n");
+                String phone =cursor.getString(cursor.getColumnIndex("phone"));
+                sb.append("id: "+personid+";"+"name: "+name+";phone:"+phone+"\n");
             }while (cursor.moveToNext());
             cursor.close();
         }

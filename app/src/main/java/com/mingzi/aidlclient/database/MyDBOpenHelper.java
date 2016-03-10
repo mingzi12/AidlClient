@@ -10,15 +10,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class MyDBOpenHelper extends SQLiteOpenHelper {
     private static final String FILE_NAME="my.db";
     public MyDBOpenHelper(Context context,String name,
-                          SQLiteDatabase.CursorFactory factory,int version){
+                          SQLiteDatabase.CursorFactory factory,int version) {
         super(context,FILE_NAME,null,1);
     }
-    public void onCreate(SQLiteDatabase db){
-        db.execSQL("create table person(personId integer primary key autoincrement,name varchar(20))");
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("create table person(personId integer primary key autoincrement,name varchar(20),phone varchar(12))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("alter table person add phone varchar(12) null");
     }
 }

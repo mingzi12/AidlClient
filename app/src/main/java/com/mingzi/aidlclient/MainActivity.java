@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initDatabaseBtn();
         Intent mAidlIntent = new Intent();
         mAidlIntent.setAction("com.mingzi.MyAidlService");
-        mAidlIntent.setPackage(this.getPackageName());
         bindService(mAidlIntent, mConn, BIND_AUTO_CREATE);
         initView();
     }
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            System.out.println("onServiceDiconnected");
         }
     };
     private void initDatabaseBtn(){
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.mAidlBtn:
             String num = mEditText.getText().toString();
             int nameNum = Integer.valueOf(num);
-            if (nameNum>=0&&nameNum<=4){
+            if (nameNum>=0 && nameNum<=4){
                 try{
                     mTextView.setText(mPerson.queryPerson(nameNum).toString());
                 }
@@ -96,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
             }
+                mEditText.setText("");
                 break;
             case R.id.savebtn:
                 FileHelper mSaveFileHelper = new FileHelper(getApplicationContext());
