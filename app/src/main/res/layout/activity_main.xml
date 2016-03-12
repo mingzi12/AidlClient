@@ -111,5 +111,12 @@
             android:textAllCaps="false"
             android:text="删除数据"/>
     </LinearLayout>
+    <Button
+        android:id="@+id/JsonBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:textAllCaps="false"
+        android:text="Json"/>
 
 </LinearLayout>
