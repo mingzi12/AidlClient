@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         myDBOpenHelper = new MyDBOpenHelper(MainActivity.this,null,null,1);
-        initFragment();
         initFileView();
         initDatabaseBtn();
         Intent mAidlIntent = new Intent();
@@ -152,17 +151,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
 
-    }
-    public void initFragment(){
-        Display mDisplay = getWindowManager().getDefaultDisplay();
-        if (mDisplay.getWidth()<mDisplay.getHeight()) {
-            MyFragment f1 = new MyFragment();
-            getFragmentManager().beginTransaction().replace(R.id.myfragment,f1).commit();
-        }
-        else {
-            MyFragment f2 = new MyFragment();
-            getFragmentManager().beginTransaction().replace(R.id.myfragment,f2).commit();
-        }
     }
     public void initFileView(){
         mFileName = (EditText) findViewById(R.id.filenametxt);
